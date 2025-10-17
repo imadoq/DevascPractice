@@ -150,7 +150,7 @@
                                 echo "<td>" . date('g:i A', strtotime($row['violation_time'])) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['license_plate']) . "</td>";
                                 echo "<td>" . htmlspecialchars($row['violation_description']) . "</td>";
-                                echo "<td><button class='resolved-btn'>Resolved</button></td>";
+                                echo "<td><button class='resolved-btn'>Resolve</button></td>";
                                 echo "</tr>";
                             }
                         } else {
@@ -208,25 +208,19 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDateTime();
     setInterval(updateDateTime, 1000);
 
-    // Handle "Resolved" button clicks
-    const originalRows = Array.from(tableBody.querySelectorAll('tr'));
+    // ✅ Fixed "Resolved" button logic
     document.querySelectorAll('.resolved-btn').forEach(button => {
         button.addEventListener('click', function() {
             const row = this.closest('tr');
-            if (row.classList.contains('resolved-row')) {
-                row.classList.remove('resolved-row');
-                this.classList.remove('checked');
-                this.textContent = "Resolved";
-                const index = originalRows.indexOf(row);
-                if (index !== -1 && index < tableBody.rows.length) {
-                    tableBody.insertBefore(row, tableBody.rows[index]);
-                }
-            } else {
-                row.classList.add('resolved-row');
-                this.classList.add('checked');
-                this.textContent = "Resolved";
-                tableBody.appendChild(row);
-            }
+
+            // If already resolved, do nothing
+            if (this.classList.contains('checked')) return;
+
+            // Otherwise mark as resolved visually
+            row.classList.add('resolved-row');
+            this.classList.add('checked');
+            this.textContent = "Resolved";
+            this.disabled = true; // optional: prevents hover/click
         });
     });
 
@@ -246,61 +240,8 @@ document.addEventListener('DOMContentLoaded', function() {
         pdf.save("Unregistered_Vehicles.pdf");
     });
 });
-
-document.addEventListener('DOMContentLoaded', function() {
-    const notificationContainer = document.getElementById('notification-container');
-    const notificationPopup = document.getElementById('notification-popup');
-    const tableBody = document.querySelector('#violationTable tbody');
-
-    notificationContainer.addEventListener('click', function(event) {
-        event.stopPropagation();
-        notificationPopup.classList.toggle('show');
-    });
-
-    window.addEventListener('click', function(event) {
-        if (notificationPopup.classList.contains('show')) {
-            notificationPopup.classList.remove('show');
-        }
-    });
-
-    function updateDateTime() {
-        const now = new Date();
-        const options = { month: 'long', day: 'numeric', year: 'numeric' };
-        document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
-
-        let hours = now.getHours();
-        let minutes = now.getMinutes();
-        let seconds = now.getSeconds();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12;
-        hours = hours ? hours : 12;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        seconds = seconds < 10 ? '0' + seconds : seconds;
-
-        document.getElementById('time').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
-    }
-    updateDateTime();
-    setInterval(updateDateTime, 1000);
-
-    // Handle "Resolved" button clicks
-        document.querySelectorAll('.resolved-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-
-            if (row.classList.contains('resolved-row')) {
-                // Already resolved - do nothing or you can toggle off if needed
-                return;
-            } else {
-                // Mark as resolved visually
-                row.classList.add('resolved-row');
-                this.classList.add('checked');
-                this.textContent = "Resolved"; // keeps button label the same
-                tableBody.appendChild(row); // move resolved rows to bottom
-            }
-        });
-    });
-});
 </script>
+
 </body>
 </html>
 
