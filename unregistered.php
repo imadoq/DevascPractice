@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Unresolve: remove gray, move back to original position
                 row.classList.remove('resolved-row');
                 button.classList.remove('checked');
-                button.textContent = "Resolved";
+                button.textContent = "Resolve";
 
                 // Find where it should go back
                 let placed = false;
