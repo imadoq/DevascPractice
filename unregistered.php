@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationPopup = document.getElementById('notification-popup');
     const tableBody = document.querySelector('#violationTable tbody');
 
-    // Handle notification popup
+    // Notification toggle
     notificationContainer.addEventListener('click', function(event) {
         event.stopPropagation();
         notificationPopup.classList.toggle('show');
@@ -189,38 +189,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Date and time
+    // Update date and time
     function updateDateTime() {
-        const now = new Date();
-        const options = { month: 'long', day: 'numeric', year: 'numeric' };
-        document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+                const now = new Date();
+                const options = { month: 'long', day: 'numeric', year: 'numeric' };
+                document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                let seconds = now.getSeconds();
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12; 
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}${ampm}`;
+            }
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
 
-        let hours = now.getHours();
-        let minutes = now.getMinutes();
-        let seconds = now.getSeconds();
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
-        minutes = minutes < 10 ? '0' + minutes : minutes;
-        seconds = seconds < 10 ? '0' + seconds : seconds;
+    // ✅ Handle "Resolved" button clicks
+    const originalOrder = Array.from(tableBody.children);
 
-        document.getElementById('time').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
-    }
-    updateDateTime();
-    setInterval(updateDateTime, 1000);
-
-    // ✅ Fixed "Resolved" button logic
     document.querySelectorAll('.resolved-btn').forEach(button => {
+        const row = button.closest('tr');
+        const originalIndex = originalOrder.indexOf(row);
+
         button.addEventListener('click', function() {
-            const row = this.closest('tr');
+            const isResolved = row.classList.contains('resolved-row');
 
-            // If already resolved, do nothing
-            if (this.classList.contains('checked')) return;
+            if (!isResolved) {
+                // Mark as resolved and move to bottom
+                row.classList.add('resolved-row');
+                button.classList.add('checked');
+                button.textContent = "Resolved";
+                tableBody.appendChild(row);
+            } else {
+                // Unresolve: remove gray, move back to original position
+                row.classList.remove('resolved-row');
+                button.classList.remove('checked');
+                button.textContent = "Resolved";
 
-            // Otherwise mark as resolved visually
-            row.classList.add('resolved-row');
-            this.classList.add('checked');
-            this.textContent = "Resolved";
-            this.disabled = true; // optional: prevents hover/click
+                // Find where it should go back
+                let placed = false;
+                for (let i = 0; i < tableBody.children.length; i++) {
+                    const currentRow = tableBody.children[i];
+                    const currentIndex = originalOrder.indexOf(currentRow);
+                    if (currentIndex > originalIndex) {
+                        tableBody.insertBefore(row, currentRow);
+                        placed = true;
+                        break;
+                    }
+                }
+                if (!placed) {
+                    tableBody.appendChild(row);
+                }
+            }
         });
     });
 
@@ -241,6 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
 
 </body>
 </html>
