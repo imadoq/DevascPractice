@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationPopup = document.getElementById('notification-popup');
     const tableBody = document.querySelector('#violationTable tbody');
 
-    // Notification toggle
+    // --- Notification toggle ---
     notificationContainer.addEventListener('click', function(event) {
         event.stopPropagation();
         notificationPopup.classList.toggle('show');
@@ -189,65 +189,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Update date and time
+    // --- Date and time ---
     function updateDateTime() {
-                const now = new Date();
-                const options = { month: 'long', day: 'numeric', year: 'numeric' };
-                document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
-                let hours = now.getHours();
-                let minutes = now.getMinutes();
-                let seconds = now.getSeconds();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12; 
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-                document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}${ampm}`;
-            }
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
+        const now = new Date();
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
 
-    // ✅ Handle "Resolved" button clicks
-    const originalOrder = Array.from(tableBody.children);
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
 
+        document.getElementById('time').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+    }
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+
+    // --- Handle "Resolve" button clicks ---
     document.querySelectorAll('.resolved-btn').forEach(button => {
-        const row = button.closest('tr');
-        const originalIndex = originalOrder.indexOf(row);
-
         button.addEventListener('click', function() {
-            const isResolved = row.classList.contains('resolved-row');
+            const row = this.closest('tr');
 
-            if (!isResolved) {
-                // Mark as resolved and move to bottom
+            if (!row.classList.contains('resolved-row')) {
+                // ✅ Resolve → move to bottom
                 row.classList.add('resolved-row');
-                button.classList.add('checked');
-                button.textContent = "Resolved";
+                this.classList.add('checked');
+                this.textContent = 'Resolved';
                 tableBody.appendChild(row);
             } else {
-                // Unresolve: remove gray, move back to original position
+                // 🔄 Unresolve → move to top
                 row.classList.remove('resolved-row');
-                button.classList.remove('checked');
-                button.textContent = "Resolve";
-
-                // Find where it should go back
-                let placed = false;
-                for (let i = 0; i < tableBody.children.length; i++) {
-                    const currentRow = tableBody.children[i];
-                    const currentIndex = originalOrder.indexOf(currentRow);
-                    if (currentIndex > originalIndex) {
-                        tableBody.insertBefore(row, currentRow);
-                        placed = true;
-                        break;
-                    }
-                }
-                if (!placed) {
-                    tableBody.appendChild(row);
-                }
+                this.classList.remove('checked');
+                this.textContent = 'Resolve';
+                tableBody.insertBefore(row, tableBody.firstChild);
             }
+
         });
     });
 
-    // ✅ PDF Download Feature
+    // --- PDF Download Feature ---
     document.getElementById('downloadPDF').addEventListener('click', async () => {
         const { jsPDF } = window.jspdf;
         const tableSection = document.getElementById('tableSection');
