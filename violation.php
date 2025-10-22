@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ParkSense - Violation History</title>
-    <!-- Your Font and CSS links -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<style>
+
+    <style>
         .confirm-btn {
             background-color: #28a745;
             color: white;
@@ -22,7 +23,6 @@
             font-weight: 500;
             transition: background-color 0.2s ease;
         }
-
         .confirm-btn:hover {
             background-color: #218838;
         }
@@ -37,7 +37,6 @@
             font-weight: 500;
             transition: background-color 0.2s ease;
         }
-
         .delete-btn:hover {
             background-color: #c82333;
         }
@@ -64,7 +63,6 @@
         .violation-table th:nth-child(3) { width: 35%; }
         .violation-table th:nth-child(4) { width: 25%; }
 
-
         .violation-table th {
             background-color: #333;
             color: white;
@@ -74,14 +72,13 @@
             background-color: gray !important;
             cursor: not-allowed;
         }
-
         .confirm-btn.checked::before {
             content: "✔ ";
         }
 
-        /* --- NEW: CSS for the Confirmation Modal --- */
+        /* 🔵 Shared Modal Styles */
         .modal-overlay {
-            display: none; /* Hidden by default */
+            display: none;
             position: fixed;
             z-index: 1000;
             left: 0;
@@ -89,12 +86,11 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.5); /* Black with opacity */
+            background-color: rgba(0,0,0,0.5);
         }
-
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto; /* 15% from the top and centered */
+            margin: 15% auto;
             padding: 25px;
             border: 1px solid #888;
             width: 80%;
@@ -102,11 +98,9 @@
             border-radius: 10px;
             text-align: center;
         }
-        
         .modal-content h3 {
             margin-top: 0;
         }
-
         .modal-buttons button {
             border: none;
             padding: 10px 20px;
@@ -115,211 +109,224 @@
             font-weight: bold;
             margin: 0 10px;
         }
-
         #confirm-delete-btn {
             background-color: #dc3545;
             color: white;
         }
-
         #cancel-delete-btn {
+            background-color: #ccc;
+            color: #333;
+        }
+        /* 🟢 Added for confirm modal buttons */
+        #confirm-confirm-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        #cancel-confirm-btn {
             background-color: #ccc;
             color: #333;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- (The main container content remains the same) -->
-        <aside class="sidebar">
-            <div>
-                <div class="sidebar-header">
+<div class="container">
+    <aside class="sidebar">
+        <div>
+            <div class="sidebar-header">
                 <div class="logo-title-container">
                     <img src="assets/ustlogo.png" alt="UST Logo" class="header-logo">
                     <h1>ParkSense</h1>
                 </div>
-                </div>
-
-                <div id="current-date-time">
-                    <p id="date"></p>
-                    <p id="time"></p>
-                </div>
-
-                <div class="system-status">
-                    <h2>System Activated</h2>
-                    <label class="toggle-switch">
-                        <input type="checkbox" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-
-                <nav class="sidebar-nav">
-                    <h2>Parking Areas:</h2>
-                    <a href="admin.php">Admin</a>
-                    <a href="student.php">Student</a>
-                </nav>
-
-                <nav class="sidebar-nav">
-                    <h2>Violations:</h2>
-                    <a href="unregistered.php">Unregistered Vehicles</a>
-                    <a href="#" class="active">Violation history</a>
-                </nav>
             </div>
-        </aside>
 
-        <main class="main-content">
-            <header class="main-header">
-                <h2>Violation History</h2>
-                <div class="notification-bell" id="notification-container">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">1</span>
-                    <div class="notification-popup" id="notification-popup">
-                        <div class="popup-content">
-                            <p>Violation detected by</p>
-                            <p><em>*license plate number*</em></p>
-                        </div>
+            <div id="current-date-time">
+                <p id="date"></p>
+                <p id="time"></p>
+            </div>
+
+            <div class="system-status">
+                <h2>System Activated</h2>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <nav class="sidebar-nav">
+                <h2>Parking Areas:</h2>
+                <a href="admin.php">Admin</a>
+                <a href="student.php">Student</a>
+            </nav>
+
+            <nav class="sidebar-nav">
+                <h2>Violations:</h2>
+                <a href="unregistered.php">Unregistered Vehicles</a>
+                <a href="#" class="active">Violation history</a>
+            </nav>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="main-header">
+            <h2>Violation History</h2>
+            <div class="notification-bell" id="notification-container">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">1</span>
+                <div class="notification-popup" id="notification-popup">
+                    <div class="popup-content">
+                        <p>Violation detected by</p>
+                        <p><em>*license plate number*</em></p>
                     </div>
                 </div>
-            </header>
-            
-            <div class="violation-content">
-                <div class="table-section">
-                    <table class="violation-table">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>License Plate</th>
-                                <th>Violation</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                                // Fetch registered violations from the database
-                                $sql = "SELECT * FROM violations WHERE vehicle_status = 'registered' ORDER BY violation_time ASC";
-                                $result = $conn->query($sql);
-
-                                if ($result->num_rows > 0) {
-                                    while($row = $result->fetch_assoc()) {
-                                        echo "<tr>";
-                                        echo "<td>" . date("g:i A", strtotime($row["violation_time"])) . "</td>";
-                                        echo "<td>" . htmlspecialchars($row["license_plate"]) . "</td>";
-                                        echo "<td>" . htmlspecialchars($row["violation_description"]) . "</td>";
-                                        echo '<td><button class="confirm-btn">Confirm</button> <button class="delete-btn">Delete</button></td>';
-                                        echo "</tr>";
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='4'>No registered violations found.</td></tr>";
-                                }
-                            ?>
-                        </tbody>
-                    </table>
-                </div>
             </div>
-        </main>
-    </div>
+        </header>
+        
+        <div class="violation-content">
+            <div class="table-section">
+                <table class="violation-table">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>License Plate</th>
+                            <th>Violation</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                            $sql = "SELECT * FROM violations WHERE vehicle_status = 'registered' ORDER BY violation_time ASC";
+                            $result = $conn->query($sql);
 
-    <!-- NEW: HTML for the Confirmation Modal -->
-    <div id="delete-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h3>Confirm Deletion</h3>
-            <p>Are you sure you want to delete this violation record?</p>
-            <div class="modal-buttons">
-                <button id="cancel-delete-btn">Cancel</button>
-                <button id="confirm-delete-btn">Yes, Delete</button>
+                            if ($result->num_rows > 0) {
+                                while($row = $result->fetch_assoc()) {
+                                    echo "<tr>";
+                                    echo "<td>" . date("g:i A", strtotime($row["violation_time"])) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row["license_plate"]) . "</td>";
+                                    echo "<td>" . htmlspecialchars($row["violation_description"]) . "</td>";
+                                    echo '<td><button class="confirm-btn">Confirm</button> <button class="delete-btn">Delete</button></td>';
+                                    echo "</tr>";
+                                }
+                            } else {
+                                echo "<tr><td colspan='4'>No registered violations found.</td></tr>";
+                            }
+                        ?>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </main>
+</div>
+
+<!-- 🟢 NEW Confirm Modal -->
+<div id="confirm-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Confirm Action</h3>
+        <p>Are you sure you want to confirm this violation?</p>
+        <div class="modal-buttons">
+            <button id="cancel-confirm-btn">Cancel</button>
+            <button id="confirm-confirm-btn">Yes, Confirm</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // (Existing notification and clock code...)
-            const notificationContainer = document.getElementById('notification-container');
-            const notificationPopup = document.getElementById('notification-popup');
+<!-- Existing Delete Modal -->
+<div id="delete-modal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>Confirm Deletion</h3>
+        <p>Are you sure you want to delete this violation record?</p>
+        <div class="modal-buttons">
+            <button id="cancel-delete-btn">Cancel</button>
+            <button id="confirm-delete-btn">Yes, Delete</button>
+        </div>
+    </div>
+</div>
 
-            notificationContainer.addEventListener('click', function(event) {
-                event.stopPropagation(); 
-                notificationPopup.classList.toggle('show');
-            });
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notificationContainer = document.getElementById('notification-container');
+    const notificationPopup = document.getElementById('notification-popup');
+    notificationContainer.addEventListener('click', e => {
+        e.stopPropagation();
+        notificationPopup.classList.toggle('show');
+    });
+    window.addEventListener('click', e => {
+        if (notificationPopup.classList.contains('show')) notificationPopup.classList.remove('show');
+    });
 
-            window.addEventListener('click', function(event) {
-                if (notificationPopup.classList.contains('show')) {
-                    notificationPopup.classList.remove('show');
-                }
-            });
-            
-            function updateDateTime() {
-                const now = new Date();
-                const options = { month: 'long', day: 'numeric', year: 'numeric' };
-                document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
-                let hours = now.getHours();
-                let minutes = now.getMinutes();
-                let seconds = now.getSeconds();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                hours = hours % 12;
-                hours = hours ? hours : 12; 
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                seconds = seconds < 10 ? '0' + seconds : seconds;
-                document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}${ampm}`;
-            }
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
+    // Clock
+    function updateDateTime() {
+        const now = new Date();
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
+        let hours = now.getHours(), minutes = now.getMinutes(), seconds = now.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        document.getElementById('time').textContent = `${hours}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}${ampm}`;
+    }
+    updateDateTime(); setInterval(updateDateTime, 1000);
 
-            // Confirm Button Functionality
-            const confirmButtons = document.querySelectorAll('.confirm-btn');
-            confirmButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    row.classList.add('confirmed-row');
-                    this.classList.add('checked');
-                    this.textContent = 'Confirmed';
-                    this.disabled = true;
+    // 🟢 Confirm Modal Logic
+    const confirmModal = document.getElementById('confirm-modal');
+    const confirmConfirmBtn = document.getElementById('confirm-confirm-btn');
+    const cancelConfirmBtn = document.getElementById('cancel-confirm-btn');
+    let rowToConfirm = null;
 
-                    const deleteButton = row.querySelector('.delete-btn');
-                    if (deleteButton) {
-                        deleteButton.style.display = 'none';
-                    }
-                });
-            });
-            
-            // --- UPDATED: Delete Button and Modal Functionality ---
-            const modal = document.getElementById('delete-modal');
-            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-            let rowToDelete = null;
-
-            const deleteButtons = document.querySelectorAll('.delete-btn');
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Store the row we want to delete and show the modal
-                    rowToDelete = this.closest('tr');
-                    modal.style.display = 'block';
-                });
-            });
-
-            // When the user clicks "Yes, Delete"
-            confirmDeleteBtn.addEventListener('click', function() {
-                if (rowToDelete) {
-                    rowToDelete.remove();
-                }
-                modal.style.display = 'none';
-                rowToDelete = null; // Reset the variable
-            });
-
-            // When the user clicks "Cancel"
-            cancelDeleteBtn.addEventListener('click', function() {
-                modal.style.display = 'none';
-                rowToDelete = null; // Reset the variable
-            });
-
-            // When the user clicks anywhere outside of the modal, close it
-            window.addEventListener('click', function(event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                    rowToDelete = null; // Reset the variable
-                }
-            });
+    document.querySelectorAll('.confirm-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            rowToConfirm = this.closest('tr');
+            confirmModal.style.display = 'block';
         });
-    </script>
+    });
+
+    confirmConfirmBtn.addEventListener('click', function() {
+        if (rowToConfirm) {
+            const confirmButton = rowToConfirm.querySelector('.confirm-btn');
+            confirmButton.classList.add('checked');
+            confirmButton.textContent = 'Confirmed';
+            confirmButton.disabled = true;
+            rowToConfirm.classList.add('confirmed-row');
+            const deleteButton = rowToConfirm.querySelector('.delete-btn');
+            if (deleteButton) deleteButton.style.display = 'none';
+        }
+        confirmModal.style.display = 'none';
+        rowToConfirm = null;
+    });
+
+    cancelConfirmBtn.addEventListener('click', function() {
+        confirmModal.style.display = 'none';
+        rowToConfirm = null;
+    });
+
+    // 🟥 Delete Modal Logic (unchanged)
+    const deleteModal = document.getElementById('delete-modal');
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+    let rowToDelete = null;
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            rowToDelete = this.closest('tr');
+            deleteModal.style.display = 'block';
+        });
+    });
+
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (rowToDelete) rowToDelete.remove();
+        deleteModal.style.display = 'none';
+        rowToDelete = null;
+    });
+
+    cancelDeleteBtn.addEventListener('click', function() {
+        deleteModal.style.display = 'none';
+        rowToDelete = null;
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target == deleteModal) deleteModal.style.display = 'none';
+        if (event.target == confirmModal) confirmModal.style.display = 'none';
+    });
+});
+</script>
 </body>
 </html>
 <?php $conn->close(); ?>
