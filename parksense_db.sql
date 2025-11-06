@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 16, 2025 at 03:42 PM
+-- Generation Time: Nov 06, 2025 at 09:08 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,22 @@ SET time_zone = "+00:00";
 --
 -- Database: `parksense_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `archive`
+--
+
+CREATE TABLE `archive` (
+  `id` int(11) NOT NULL,
+  `original_violation_id` int(11) NOT NULL,
+  `violation_time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `license_plate` varchar(20) NOT NULL,
+  `violation_description` varchar(255) NOT NULL,
+  `vehicle_status` enum('registered','unregistered') NOT NULL,
+  `archive_time` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -83,19 +99,25 @@ CREATE TABLE `violations` (
 
 INSERT INTO `violations` (`id`, `violation_time`, `license_plate`, `violation_description`, `vehicle_status`) VALUES
 (1, '2023-01-01 00:13:00', 'LBM-7154', 'Parked in Admin', 'registered'),
-(2, '2023-01-01 02:08:00', 'HNG-9402', 'Parked in Admin', 'registered'),
 (3, '2023-01-01 04:03:00', 'MNC-0146', 'Parked in Student', 'registered'),
-(4, '2023-01-01 05:58:00', 'TSB-4210', 'Parked in Student', 'registered'),
-(5, '2023-01-01 07:53:00', 'PZD-8957', 'Parked in Student', 'registered'),
-(6, '2023-01-01 00:37:00', 'ZKM-5924', 'Parked in Admin', 'unregistered'),
 (7, '2023-01-01 01:25:00', 'BTD-3187', 'Parked in Student', 'unregistered'),
 (8, '2023-01-01 03:42:00', 'RXG-7405', 'Parked in Student', 'unregistered'),
 (9, '2023-01-01 05:16:00', 'JLP-2096', 'Parked in Admin', 'unregistered'),
-(10, '2023-01-01 07:48:00', 'HQA-8653', 'Parked in Student', 'unregistered');
+(12, '2023-01-01 02:08:00', 'HNG-9402', 'Parked in Admin', 'registered'),
+(13, '2023-01-01 05:58:00', 'TSB-4210', 'Parked in Student', 'registered'),
+(17, '2023-01-01 07:48:00', 'HQA-8653', 'Parked in Student', 'unregistered'),
+(18, '2023-01-01 07:53:00', 'PZD-8957', 'Parked in Student', 'registered'),
+(19, '2023-01-01 00:37:00', 'ZKM-5924', 'Parked in Admin', 'unregistered');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `archive`
+--
+ALTER TABLE `archive`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `registered_vehicles`
@@ -115,6 +137,12 @@ ALTER TABLE `violations`
 --
 
 --
+-- AUTO_INCREMENT for table `archive`
+--
+ALTER TABLE `archive`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
 -- AUTO_INCREMENT for table `registered_vehicles`
 --
 ALTER TABLE `registered_vehicles`
@@ -124,7 +152,7 @@ ALTER TABLE `registered_vehicles`
 -- AUTO_INCREMENT for table `violations`
 --
 ALTER TABLE `violations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

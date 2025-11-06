@@ -43,6 +43,7 @@
                 <h2>Violations:</h2>
                 <a href="unregistered.php">Unregistered Vehicles</a>
                 <a href="violation.php">Violation history</a>
+                <a href="archive.php">Archives</a> 
             </nav>
             </div>
         </aside>

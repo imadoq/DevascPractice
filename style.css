@@ -313,3 +313,4 @@ input:not(:checked) + .slider:before {
     font-style: italic;
     font-weight: bold;
 }
+
