@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2025 at 09:08 AM
+-- Generation Time: Nov 10, 2025 at 06:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -77,7 +77,37 @@ INSERT INTO `registered_vehicles` (`id`, `license_plate`, `car_brand`, `car_mode
 (17, 'XUV-4703', 'Hyundai', 'Stargazer', '17email@gmail.com', '0956 237 4908', 'Teacher'),
 (18, 'JKH-3369', 'Ford', 'Everest', '18email@gmail.com', '0928 701 5439', 'Teacher'),
 (19, 'YBR-5802', 'Toyota', 'Hilux', '19email@gmail.com', '0907 912 6584', 'Teacher'),
-(20, 'OLT-1275', 'Honda', 'BR-V', '20email@gmail.com', '0999 843 2750', 'Teacher');
+(20, 'OLT-1275', 'Honda', 'BR-V', '20email@gmail.com', '0999 843 2750', 'Teacher'),
+(21, 'BDX-7284', 'Honda', 'Jazz', '21email@gmail.com', '0917 563 2841', 'Student'),
+(22, 'KMG-4197', 'Toyota', 'Camry', '22email@gmail.com', '0908 372 5619', 'Student'),
+(23, 'LZT-0842', 'Mazda', 'CX-5', '23email@gmail.com', '0951 637 8402', 'Student'),
+(24, 'QAP-5739', 'Hyundai', 'Accent', '24email@gmail.com', '0998 214 6573', 'Student'),
+(25, 'SRW-9825', 'Nissan', 'Terra', '25email@gmail.com', '0922 417 9536', 'Student'),
+(26, 'JHU-2641', 'Suzuki', 'Swift', '26email@gmail.com', '0912 804 3765', 'Student'),
+(27, 'MGV-8610', 'Ford', 'EcoSport', '27email@gmail.com', '0943 218 6750', 'Student'),
+(28, 'ZCK-5073', 'Mitsubishi', 'L300', '28email@gmail.com', '0906 453 7824', 'Student'),
+(29, 'FTX-3198', 'Toyota', 'Avanza', '29email@gmail.com', '0935 287 4106', 'Student'),
+(30, 'PLD-6752', 'Chevrolet', 'Trailblazer', '30email@gmail.com', '0977 602 1985', 'Student'),
+(31, 'RHB-8426', 'Honda', 'HR-V', '31email@gmail.com', '0918 754 9630', 'Teacher'),
+(32, 'WQP-1954', 'Toyota', 'Yaris', '32email@gmail.com', '0909 341 5028', 'Teacher'),
+(33, 'TNC-6807', 'Subaru', 'Forester', '33email@gmail.com', '0954 730 9661', 'Teacher'),
+(34, 'VSM-4032', 'Isuzu', 'MU-X', '34email@gmail.com', '0921 864 3305', 'Teacher'),
+(35, 'PYX-2590', 'Mitsubishi', 'Montero Sport', '35email@gmail.com', '0979 863 4012', 'Teacher'),
+(36, 'GJD-7316', 'Kia', 'Seltos', '36email@gmail.com', '0914 762 5803', 'Teacher'),
+(37, 'HAB-5549', 'Hyundai', 'Elantra', '37email@gmail.com', '0942 150 2973', 'Teacher'),
+(38, 'XFT-1038', 'Ford', 'Explorer', '38email@gmail.com', '0991 573 8246', 'Teacher'),
+(39, 'BLP-4670', 'Nissan', 'Livina', '39email@gmail.com', '0930 752 6094', 'Teacher'),
+(40, 'KRT-9205', 'Toyota', 'RAV4', '40email@gmail.com', '0907 615 9342', 'Teacher'),
+(41, 'MPA-2846', 'Honda', 'BR-V', '41email@gmail.com', '0917 350 2741', 'Student'),
+(42, 'SJF-7601', 'Suzuki', 'Jimny', '42email@gmail.com', '0964 810 3257', 'Student'),
+(43, 'UDB-3129', 'Mitsubishi', 'Strada', '43email@gmail.com', '0925 901 3468', 'Student'),
+(44, 'LHG-9582', 'Toyota', 'Hiace', '44email@gmail.com', '0950 482 7136', 'Student'),
+(45, 'QWX-6405', 'Honda', 'Civic RS', '45email@gmail.com', '0975 304 8931', 'Student'),
+(46, 'RVL-8013', 'Hyundai', 'Venue', '46email@gmail.com', '0916 241 7538', 'Teacher'),
+(47, 'ZTB-1294', 'Mazda', 'Mazda 3', '47email@gmail.com', '0928 573 0142', 'Teacher'),
+(48, 'FGR-5558', 'Toyota', 'Corolla Altis', '48email@gmail.com', '0933 976 2541', 'Teacher'),
+(49, 'NCP-3742', 'Isuzu', 'Crosswind', '49email@gmail.com', '0948 735 1049', 'Teacher'),
+(50, 'YMK-8476', 'Ford', 'Fiesta', '50email@gmail.com', '0905 610 9837', 'Teacher');
 
 -- --------------------------------------------------------
 
@@ -98,7 +128,6 @@ CREATE TABLE `violations` (
 --
 
 INSERT INTO `violations` (`id`, `violation_time`, `license_plate`, `violation_description`, `vehicle_status`) VALUES
-(1, '2023-01-01 00:13:00', 'LBM-7154', 'Parked in Admin', 'registered'),
 (3, '2023-01-01 04:03:00', 'MNC-0146', 'Parked in Student', 'registered'),
 (7, '2023-01-01 01:25:00', 'BTD-3187', 'Parked in Student', 'unregistered'),
 (8, '2023-01-01 03:42:00', 'RXG-7405', 'Parked in Student', 'unregistered'),
@@ -106,8 +135,32 @@ INSERT INTO `violations` (`id`, `violation_time`, `license_plate`, `violation_de
 (12, '2023-01-01 02:08:00', 'HNG-9402', 'Parked in Admin', 'registered'),
 (13, '2023-01-01 05:58:00', 'TSB-4210', 'Parked in Student', 'registered'),
 (17, '2023-01-01 07:48:00', 'HQA-8653', 'Parked in Student', 'unregistered'),
-(18, '2023-01-01 07:53:00', 'PZD-8957', 'Parked in Student', 'registered'),
-(19, '2023-01-01 00:37:00', 'ZKM-5924', 'Parked in Admin', 'unregistered');
+(20, '2023-01-01 07:53:00', 'PZD-8957', 'Parked in Student', 'registered'),
+(22, '2023-01-01 00:13:00', 'LBM-7154', 'Parked in Admin', 'registered'),
+(23, '2023-01-01 00:37:00', 'ZKM-5924', 'Parked in Admin', 'unregistered'),
+(50, '2025-11-10 05:09:07', 'KMG-4197', 'Parked in Admin', 'registered'),
+(51, '2025-11-10 05:09:07', 'BJX-7219', 'Parked in Student', 'unregistered'),
+(52, '2025-11-10 05:10:02', 'ABC-1234', 'Parked in Admin', 'unregistered'),
+(53, '2025-10-31 23:15:00', 'SJF-7601', 'Parked in Teacher', 'registered'),
+(54, '2025-10-31 23:32:00', 'MPA-2846', 'Parked in Admin', 'registered'),
+(55, '2025-11-01 00:05:00', 'ZTB-1294', 'Blocking Driveway', 'registered'),
+(56, '2025-11-01 00:27:00', 'BTD-3187', 'Parked in Student', 'unregistered'),
+(57, '2025-11-01 01:10:00', 'XUV-4703', 'No Parking Permit Displayed', 'registered'),
+(58, '2025-11-01 01:33:00', 'RXG-7405', 'Parked in Fire Lane', 'unregistered'),
+(59, '2025-11-01 01:50:00', 'JKH-3369', 'Parked in Teacher', 'registered'),
+(60, '2025-11-01 02:14:00', 'YBR-5802', 'Occupying Two Slots', 'registered'),
+(61, '2025-11-01 02:28:00', 'LBM-7154', 'Parked in Admin', 'registered'),
+(62, '2025-11-01 03:05:00', 'SRW-9825', 'Parked in Handicap Only', 'registered'),
+(63, '2025-11-01 03:22:00', 'HQA-8653', 'Parked in Student', 'unregistered'),
+(64, '2025-11-01 03:41:00', 'QWX-6405', 'Parked in No Parking Zone', 'registered'),
+(65, '2025-11-01 04:03:00', 'UDB-3129', 'Blocking Gate', 'registered'),
+(66, '2025-11-01 04:26:00', 'GJD-7316', 'Parked in Teacher', 'registered'),
+(67, '2025-11-01 04:47:00', 'FTX-3198', 'Parked in Reserved Slot', 'registered'),
+(68, '2025-11-01 05:02:00', 'HNG-9402', 'Parked in Admin', 'registered'),
+(69, '2025-11-01 05:18:00', 'ZKM-5924', 'Parked in Admin', 'unregistered'),
+(70, '2025-11-01 05:44:00', 'KRT-9205', 'Double Parking', 'registered'),
+(71, '2025-11-01 06:03:00', 'VSM-4032', 'No Sticker', 'registered'),
+(72, '2025-11-01 06:28:00', 'RQV-2308', 'Parked in Teacher', 'registered');
 
 --
 -- Indexes for dumped tables
@@ -140,19 +193,19 @@ ALTER TABLE `violations`
 -- AUTO_INCREMENT for table `archive`
 --
 ALTER TABLE `archive`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `registered_vehicles`
 --
 ALTER TABLE `registered_vehicles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 
 --
 -- AUTO_INCREMENT for table `violations`
 --
 ALTER TABLE `violations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

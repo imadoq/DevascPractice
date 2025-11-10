@@ -1,4 +1,59 @@
-<?php include 'db_connect.php'; ?>
+<?php
+include 'db_connect.php';
+
+$records_per_page = 5;
+
+// --- 1. PAGINATION FOR REGISTERED VEHICLES ---
+$page_reg = isset($_GET['page_reg']) && is_numeric($_GET['page_reg']) ? (int)$_GET['page_reg'] : 1;
+$offset_reg = ($page_reg - 1) * $records_per_page;
+
+// Count total records for registered
+$total_reg_result = $conn->query("SELECT COUNT(*) FROM archive WHERE vehicle_status = 'registered'");
+$total_reg_records = $total_reg_result->fetch_row()[0];
+$total_reg_pages = ceil($total_reg_records / $records_per_page);
+
+// --- 2. PAGINATION FOR UNREGISTERED VEHICLES ---
+$page_unreg = isset($_GET['page_unreg']) && is_numeric($_GET['page_unreg']) ? (int)$_GET['page_unreg'] : 1;
+$offset_unreg = ($page_unreg - 1) * $records_per_page;
+
+// Count total records for unregistered
+$total_unreg_result = $conn->query("SELECT COUNT(*) FROM archive WHERE vehicle_status = 'unregistered'");
+$total_unreg_records = $total_unreg_result->fetch_row()[0];
+$total_unreg_pages = ceil($total_unreg_records / $records_per_page);
+
+
+// Function to generate the pagination links
+function generate_pagination_links($current_page, $total_pages, $page_param, $other_params) {
+    echo '<div class="pagination">';
+    
+    // Previous button
+    if ($current_page > 1) {
+        $prev_page = $current_page - 1;
+        echo "<a href='?{$page_param}={$prev_page}&{$other_params}'><i class='fas fa-chevron-left'></i> Prev</a>";
+    } else {
+        echo "<span class='disabled'><i class='fas fa-chevron-left'></i> Prev</span>";
+    }
+
+    // Page number links
+    for ($i = 1; $i <= $total_pages; $i++) {
+        if ($i == $current_page) {
+            echo "<a href='#' class='active'>{$i}</a>";
+        } else {
+            echo "<a href='?{$page_param}={$i}&{$other_params}'>{$i}</a>";
+        }
+    }
+
+    // Next button
+    if ($current_page < $total_pages) {
+        $next_page = $current_page + 1;
+        echo "<a href='?{$page_param}={$next_page}&{$other_params}'>Next <i class='fas fa-chevron-right'></i></a>";
+    } else {
+        echo "<span class='disabled'>Next <i class='fas fa-chevron-right'></i></span>";
+    }
+
+    echo '</div>';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,32 +65,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <style>
-        .violation-section h2 { text-decoration: underline; font-size: 1.8em; font-weight: bold; margin-bottom: 20px; }
-        .violation-section { margin-bottom: 50px; }
-        .violation-table { width: 100%; border-collapse: collapse; }
-        .violation-table th, .violation-table td { padding: 12px 15px; text-align: left; }
-        .violation-table th { background-color: #333; color: white; text-transform: uppercase; }
-        .violation-table td { border-bottom: 1px solid #f0f0f0; }
-        .restore-btn { background-color: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; }
-        .restore-btn:hover { background-color: #218838; }
-        .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; }
-        .pagination a { display: flex; align-items: center; justify-content: center; text-decoration: none; color: #333; padding: 10px 15px; border: 1px solid #ddd; border-radius: 5px; }
-        .pagination a:hover { background-color: #f5f5f5; }
-        .pagination a.active { background-color: #333; color: white; border-color: #333; cursor: default; }
-        .download-btn { position: fixed; bottom: 20px; right: 30px; background-color: #007bff; color: white; border: none; padding: 12px 18px; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); }
-        .download-btn:hover { background-color: #0056b3; }
+<style>
+    .violation-section h2 { text-decoration: underline; font-size: 1.8em; font-weight: bold; margin-bottom: 20px; }
+    .violation-section { margin-bottom: 50px; }
+    .violation-table { width: 100%; border-collapse: collapse; table-layout: fixed; word-wrap: break-word; }
+    .violation-table th, .violation-table td { padding: 10px; text-align: left; }
+    .violation-table th { background-color: #333; color: white; text-transform: uppercase; }
+    .violation-table tr:nth-child(odd) { background-color: #ffffff; }
+    .violation-table tr:nth-child(even) { background-color: #dcdcdc; }
+    .violation-table tr:last-child td { border-bottom: none; }
+    
+    .restore-btn { background-color: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; }
+    .restore-btn:hover { background-color: #218838; }
+    
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 30px; }
+    .pagination a, .pagination span.disabled { display: flex; align-items: center; gap: 5px; justify-content: center; text-decoration: none; color: #333; padding: 10px 15px; border: 1px solid #ddd; border-radius: 5px; }
+    .pagination a:hover { background-color: #f5f5f5; }
+    .pagination a.active { background-color: #333; color: white; border-color: #333; cursor: default; }
+    .pagination span.disabled { color: #aaa; background-color: #f9f9f9; cursor: not-allowed; }
+    
+    .download-btn { display: inline-block; text-decoration: none; position: fixed; bottom: 20px; right: 30px; background-color: #007bff; color: white; border: none; padding: 12px 18px; border-radius: 8px; cursor: pointer; font-size: 16px; box-shadow: 0px 3px 6px rgba(0,0,0,0.2); }
+    .download-btn:hover { background-color: #0056b3; }
 
-        .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: #fefefe; margin: 15% auto; padding: 25px; border: 1px solid #888; width: 80%; max-width: 400px; border-radius: 10px; text-align: center; }
-        .modal-content h3 { margin-top: 0; }
-        .modal-buttons button { border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin: 0 10px; }
-        #confirm-restore-btn { background-color: #28a745; color: white; }
-        #cancel-restore-btn { background-color: #ccc; color: #333; }
-    </style>
+    .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+    .modal-content { background-color: #fefefe; margin: 15% auto; padding: 25px; border: 1px solid #888; width: 80%; max-width: 400px; border-radius: 10px; text-align: center; }
+    .modal-content h3 { margin-top: 0; }
+    .modal-buttons button { border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin: 0 10px; }
+    #confirm-restore-btn { background-color: #28a745; color: white; }
+    #cancel-restore-btn { background-color: #ccc; color: #333; }
+</style>
+
 </head>
 <body>
 <div class="container">
@@ -48,7 +108,6 @@
             <nav class="sidebar-nav"><h2>Violations:</h2><a href="unregistered.php">Unregistered Vehicles</a><a href="violation.php">Violation history</a><a href="archive.php" class="active">Archives</a> </nav>
         </div>
     </aside>
-
     <main class="main-content" id="archiveContent">
         <header class="main-header">
             <h2>Archives</h2>
@@ -61,11 +120,15 @@
                 <thead><tr><th style="width: 15%;">Time</th><th style="width: 25%;">License Plate</th><th style="width: 45%;">Violation</th><th style="width: 15%;">Actions</th></tr></thead>
                 <tbody>
                     <?php
-                        $sql_registered = "SELECT * FROM archive WHERE vehicle_status = 'registered' ORDER BY archive_time DESC";
-                        $result_registered = $conn->query($sql_registered);
+                        // ✅ CHANGE HERE: Sorting by violation_time to be consistent.
+                        $sql_registered = "SELECT * FROM archive WHERE vehicle_status = 'registered' ORDER BY violation_time DESC LIMIT ? OFFSET ?";
+                        $stmt_reg = $conn->prepare($sql_registered);
+                        $stmt_reg->bind_param("ii", $records_per_page, $offset_reg);
+                        $stmt_reg->execute();
+                        $result_registered = $stmt_reg->get_result();
+
                         if ($result_registered->num_rows > 0) {
                             while($row = $result_registered->fetch_assoc()) {
-                                // ✅ ADDED data-id ATTRIBUTE
                                 echo "<tr data-id='" . htmlspecialchars($row["id"]) . "'>";
                                 echo "<td>" . date("g:i A", strtotime($row["violation_time"])) . "</td>";
                                 echo "<td>" . htmlspecialchars($row["license_plate"]) . "</td>";
@@ -79,7 +142,11 @@
                     ?>
                 </tbody>
             </table>
-            <div class="pagination"><a href="#"><i class="fas fa-chevron-left"></i> Prev</a><a href="#" class="active">1</a><a href="#">Next <i class="fas fa-chevron-right"></i></a></div>
+            <?php 
+                if ($total_reg_pages > 1) {
+                    generate_pagination_links($page_reg, $total_reg_pages, 'page_reg', "page_unreg=$page_unreg");
+                }
+            ?>
         </div>
 
         <div class="violation-section">
@@ -88,11 +155,15 @@
                 <thead><tr><th style="width: 15%;">Time</th><th style="width: 25%;">License Plate</th><th style="width: 45%;">Violation</th><th style="width: 15%;">Actions</th></tr></thead>
                 <tbody>
                     <?php
-                        $sql_unregistered = "SELECT * FROM archive WHERE vehicle_status = 'unregistered' ORDER BY archive_time DESC";
-                        $result_unregistered = $conn->query($sql_unregistered);
+                        // ✅ CHANGE HERE: Sorting by violation_time to be consistent.
+                        $sql_unregistered = "SELECT * FROM archive WHERE vehicle_status = 'unregistered' ORDER BY violation_time ASC LIMIT ? OFFSET ?";
+                        $stmt_unreg = $conn->prepare($sql_unregistered);
+                        $stmt_unreg->bind_param("ii", $records_per_page, $offset_unreg);
+                        $stmt_unreg->execute();
+                        $result_unregistered = $stmt_unreg->get_result();
+
                         if ($result_unregistered->num_rows > 0) {
                             while($row = $result_unregistered->fetch_assoc()) {
-                                // ✅ ADDED data-id ATTRIBUTE
                                 echo "<tr data-id='" . htmlspecialchars($row["id"]) . "'>";
                                 echo "<td>" . date("g:i A", strtotime($row["violation_time"])) . "</td>";
                                 echo "<td>" . htmlspecialchars($row["license_plate"]) . "</td>";
@@ -106,14 +177,19 @@
                     ?>
                 </tbody>
             </table>
-            <div class="pagination"><a href="#"><i class="fas fa-chevron-left"></i> Prev</a><a href="#" class="active">1</a><a href="#">Next <i class="fas fa-chevron-right"></i></a></div>
+             <?php 
+                if ($total_unreg_pages > 1) {
+                    generate_pagination_links($page_unreg, $total_unreg_pages, 'page_unreg', "page_reg=$page_reg");
+                }
+            ?>
         </div>
     </main>
 </div>
 
-<button class="download-btn" id="downloadPDF"><i class="fas fa-file-download"></i> Download PDF</button>
+<a href="download_archive.php" target="_blank" class="download-btn">
+    <i class="fas fa-file-download"></i> Download PDF
+</a>
 
-<!-- ✅ ADDED RESTORE MODAL HTML -->
 <div id="restore-modal" class="modal-overlay">
     <div class="modal-content">
         <h3>Restore Violation</h3>
@@ -125,10 +201,9 @@
     </div>
 </div>
 
-<!-- ✅ UPDATED SCRIPT WITH RESTORE LOGIC -->
 <script>
+// The JavaScript remains unchanged.
 document.addEventListener('DOMContentLoaded', function() {
-    // --- Clock, Notification, and PDF functions (unchanged) ---
     function updateDateTime() {
         const now = new Date();
         const options = { month: 'long', day: 'numeric', year: 'numeric' };
@@ -143,19 +218,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const notificationPopup = document.getElementById('notification-popup');
     notificationContainer.addEventListener('click', function(event) { event.stopPropagation(); notificationPopup.classList.toggle('show'); });
     window.addEventListener('click', function() { if (notificationPopup.classList.contains('show')) { notificationPopup.classList.remove('show'); } });
-    document.getElementById('downloadPDF').addEventListener('click', async () => { /* PDF Logic is unchanged */ });
 
-
-    // --- NEW: Restore Functionality ---
     const restoreModal = document.getElementById('restore-modal');
     let rowToRestore = null;
 
-    // Function to call the restore API
     async function restoreViolation(archiveId) {
         const formData = new FormData();
         formData.append('archive_id', archiveId);
         try {
-            const response = await fetch('api_restore_violation.php', { method: 'POST', body: formData });
+            const response = await fetch('restore_violation.php', { method: 'POST', body: formData });
             const result = await response.json();
             if (result.success) {
                 return true;
@@ -170,7 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Use event delegation to listen for clicks on any "Restore" button
     document.querySelector('.main-content').addEventListener('click', function(event) {
         if (event.target.classList.contains('restore-btn')) {
             rowToRestore = event.target.closest('tr');
@@ -178,20 +248,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Handle the "Yes, Restore" click in the modal
     document.getElementById('confirm-restore-btn').addEventListener('click', async function() {
         if (rowToRestore) {
             const archiveId = rowToRestore.dataset.id;
             const success = await restoreViolation(archiveId);
             if (success) {
-                rowToRestore.remove(); // Remove the row from the page
+                rowToRestore.remove();
+                window.location.reload();
             }
         }
-        restoreModal.style.display = 'none'; // Hide the modal
-        rowToRestore = null; // Reset the variable
+        restoreModal.style.display = 'none';
+        rowToRestore = null;
     });
 
-    // Handle the "Cancel" click and clicking outside the modal
     document.getElementById('cancel-restore-btn').addEventListener('click', function() {
         restoreModal.style.display = 'none';
         rowToRestore = null;
